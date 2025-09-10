@@ -1,0 +1,6 @@
+﻿  Boid.cpp
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(8,29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(9,29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(94,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(95,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Raylib Starter Project.vcxproj -> C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\x64\Debug\Raylib Starter Project.exe
