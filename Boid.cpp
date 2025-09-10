@@ -87,7 +87,7 @@ void Boid::Draw()
 
 Vector2 Boid::Normalize(const Vector2& velocity)
 {
-    if (velocity.x == 0 || velocity.y == 0)
+    if (velocity.x == 0 && velocity.y == 0)
     {
         return velocity;
     }
