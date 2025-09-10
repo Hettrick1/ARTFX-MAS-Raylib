@@ -11,7 +11,7 @@ private:
 	Vector2 mVelocity;
 	float mMaxSpeed = 50;
 	float mRotation = 0;
-	float mMinimumDistance = 2500;
+	float mMinimumDistance = 50;
 	static int boidsCount;
 	int mId;
 public:

@@ -51,12 +51,12 @@ Vector2 Boid::Separate(std::vector<Boid*>& pOthers)
         dist.x = GetPosition().x - boid->GetPosition().x;
         dist.y = GetPosition().y - boid->GetPosition().y;
 
-        float distanceSq = dist.x * dist.x + dist.y * dist.y; 
+        float distanceSq = sqrt(dist.x * dist.x + dist.y * dist.y); 
 
         if (distanceSq <= mMinimumDistance)
         {
-            AllDistances.x += dist.x * 100;
-            AllDistances.y += dist.y * 100;
+            AllDistances.x += dist.x * 1000;
+            AllDistances.y += dist.y * 1000;
         }
     }
     return Normalize(AllDistances);
@@ -82,7 +82,7 @@ void Boid::Draw()
     Vector2 origin = Vector2{ (float)(mRect.width * 0.5), (float)(mRect.height * 0.5) };
     DrawRectanglePro(mRect, origin, mRotation, WHITE);
 
-    //DrawCircleLines(mRect.x, mRect.y, sqrt(mMinimumDistance), RED);
+    DrawCircleLines(mRect.x, mRect.y, mMinimumDistance, RED);
 }
 
 Vector2 Boid::Normalize(const Vector2& velocity)
