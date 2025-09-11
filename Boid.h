@@ -9,22 +9,24 @@ class Boid
 private:
 	Rectangle mRect;
 	Vector2 mVelocity;
-	float mMaxSpeed = 50;
+	float mMaxSpeed = 300;
 	float mRotation = 0;
-	float mMinimumDistance = 75;
+	float mMinimumDistance = 50;
 	static int boidsCount;
 	int mId;
+	Texture mTexture;
+	Color mColor;
 public:
-	Boid(Vector2 pPosition, float pInitialRotation);
+	Boid(const Vector2& pInitialPosition, float pInitialRotation, const Color& color, const Texture& pTexture);
 	~Boid();
 
-	void Move(std::vector<Boid*>& pBoids, std::vector<Obstacle*> pObstacles);
+	void Move(const std::vector<Boid*>& pBoids, const std::vector<Obstacle*>& pObstacles);
 
-	Vector2 Separate(std::vector<Boid*>& pOthers);
+	Vector2 Separate(const std::vector<Boid*>& pOthers);
 	Vector2 AvoidScreenBorder();
-	Vector2 AvoidObstacles(std::vector<Obstacle*> pObstacles);
-	Vector2 Align(std::vector<Boid*> pOthers);
-	Vector2 Group(std::vector<Boid*> pOthers);
+	Vector2 AvoidObstacles(const std::vector<Obstacle*>& pObstacles);
+	Vector2 Align(const std::vector<Boid*>& pOthers);
+	Vector2 Group(const std::vector<Boid*>& pOthers);
 
 	inline Vector2 GetVelocity() const { return mVelocity; }
 	inline void SetVelocity(Vector2 pVelocity) { mVelocity = pVelocity; }

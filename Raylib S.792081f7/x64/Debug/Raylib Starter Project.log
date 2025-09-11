@@ -1,12 +1,5 @@
-﻿  Boid.cpp
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(10,29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(11,29): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(27,66): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(28,66): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(32,24): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(50,34): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(51,34): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(146,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(147,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(153,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+﻿  main.cpp
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\main.cpp(86,122): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\main.cpp(91,122): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\main.cpp(96,122): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Raylib Starter Project.vcxproj -> C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\x64\Debug\Raylib Starter Project.exe
