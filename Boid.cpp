@@ -1,4 +1,6 @@
 #include "Boid.h"
+#include "Obstacle.h"
+#include <algorithm>
 
 int Boid::boidsCount = 0;
 
@@ -15,56 +17,105 @@ Boid::~Boid()
 {
 }
 
-void Boid::Move(std::vector<Boid*>& pBoids)
+void Boid::Move(std::vector<Boid*>& pBoids, std::vector<Obstacle*> pObstacles)
 {
-    if (mRect.x <= 0 || mRect.x >= 1080)
+    Vector2 steering = Separate(pBoids);
+
+    Vector2 steeringScreen = AvoidScreenBorder();
+    Vector2 steeringObstacles = AvoidObstacles(pObstacles);
+
+    mVelocity.x += (steering.x * 0.8) + (steeringScreen.x * 0.2) + (steeringObstacles.x * 0.2);
+    mVelocity.y += (steering.y * 0.8) + (steeringScreen.y * 0.2) + (steeringObstacles.y * 0.2);
+
+    Vector2 desiredVelocity = Normalize(mVelocity);
+
+    float desiredAngle = atan2(desiredVelocity.y, desiredVelocity.x);
+
+    float angleDiff = desiredAngle - mRotation;
+
+    ClampAngle(angleDiff);
+
+    float turnFactor = 100.0f;
+    if (angleDiff > turnFactor) 
     {
-        mVelocity.x = -mVelocity.x;
+        angleDiff = turnFactor;
     }
-    else if (mRect.y <= 0 || mRect.y >= 720)
+    if (angleDiff < -turnFactor) 
     {
-        mVelocity.y = -mVelocity.y;
+        angleDiff = -turnFactor;
     }
 
-    mVelocity.x += Separate(pBoids).x;
-    mVelocity.y += Separate(pBoids).y;
+    mRotation += angleDiff;
 
-    Vector2 NormalizedVelocity = Normalize(mVelocity);
+    mVelocity.x = cos(mRotation) * mMaxSpeed;
+    mVelocity.y = sin(mRotation) * mMaxSpeed;
 
-    Vector2 translation = { mMaxSpeed * NormalizedVelocity.x, mMaxSpeed * NormalizedVelocity.y };
-
-    mRect.x += translation.x * GetFrameTime();
-    mRect.y += translation.y * GetFrameTime();
+    mRect.x += mVelocity.x * GetFrameTime();
+    mRect.y += mVelocity.y * GetFrameTime();
 }
 
 Vector2 Boid::Separate(std::vector<Boid*>& pOthers)
 {
-    Vector2 AllDistances = Vector2{0, 0};
-    for (auto boid : pOthers)
+    Vector2 steering = { 0.0f, 0.0f };
+    int count = 0;
+    float minDistSq = mMinimumDistance * mMinimumDistance;
+    const float EPS = 1e-6f;
+
+    for (const auto& boid : pOthers)
     {
-        if (mId == boid->GetID())
+        if (boid->GetID() == mId)
         {
             continue;
         }
 
-        Vector2 dist;
-        dist.x = GetPosition().x - boid->GetPosition().x;
-        dist.y = GetPosition().y - boid->GetPosition().y;
+        Vector2 diff = { GetPosition().x - boid->GetPosition().x, GetPosition().y - boid->GetPosition().y };
 
-        float distanceSq = sqrt(dist.x * dist.x + dist.y * dist.y); 
-
-        if (distanceSq <= mMinimumDistance)
-        {
-            AllDistances.x += dist.x * 1000;
-            AllDistances.y += dist.y * 1000;
+        float distSq = diff.x * diff.x + diff.y * diff.y;
+        if (distSq < minDistSq && distSq > EPS)
+        {      
+            steering.x += diff.x * (1 / distSq * 10);
+            steering.y += diff.y * (1 / distSq * 10);;
+            count++;
         }
     }
-    return Normalize(AllDistances);
+
+    if (count > 0)
+    {
+        steering.x /= (float)count;
+        steering.y /= (float)count;
+        steering = Normalize(steering);
+    }
+    return steering;
+}
+
+Vector2 Boid::AvoidScreenBorder()
+{
+    int Xmin = 100, Xmax = 980, Ymin = 100, Ymax = 620; // screen size - 100
+    Vector2 steering = { 0.0f, 0.0f };
+
+    if (mRect.x < Xmin)
+    {
+        steering.x = 10;
+    }
+    else if (mRect.x > Xmax)
+    {
+        steering.x = -10;
+    }
+    if (mRect.y < Ymin)
+    {
+        steering.y = 10;
+    }
+    else if (mRect.y > Ymax)
+    {
+        steering.y = -10;
+    }
+
+    return steering;
 }
 
 Vector2 Boid::AvoidObstacles(std::vector<Obstacle*> pObstacles)
 {
-    return Vector2();
+    return Vector2{ 0.0f, 0.0f };
 }
 
 Vector2 Boid::Align(std::vector<Boid*> pOthers)
@@ -80,18 +131,32 @@ Vector2 Boid::Group(std::vector<Boid*> pOthers)
 void Boid::Draw()
 {
     Vector2 origin = Vector2{ (float)(mRect.width * 0.5), (float)(mRect.height * 0.5) };
-    DrawRectanglePro(mRect, origin, mRotation, WHITE);
 
-    DrawCircleLines(mRect.x, mRect.y, mMinimumDistance, RED);
+    DrawRectanglePro(mRect, origin, mRotation * RAD2DEG, WHITE);
+
+    //DrawCircleLines(mRect.x, mRect.y, mMinimumDistance, RED);
 }
 
-Vector2 Boid::Normalize(const Vector2& velocity)
+Vector2 Boid::Normalize(const Vector2& vector)
 {
-    if (velocity.x == 0 && velocity.y == 0)
+    if (vector.x == 0 && vector.y == 0)
     {
-        return velocity;
+        return vector;
     }
-    float newX = velocity.x / sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-    float newY = velocity.y / sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+    float newX = vector.x / sqrt(vector.x * vector.x + vector.y * vector.y);
+    float newY = vector.y / sqrt(vector.x * vector.x + vector.y * vector.y);
     return Vector2{ newX, newY };
+}
+
+float Boid::Length(const Vector2& vector)
+{
+    float length = vector.x / sqrt(vector.x * vector.x + vector.y * vector.y);
+    return length;
+}
+
+float Boid::ClampAngle(float& angle)
+{
+    while (angle > PI)  angle -= 2 * PI;
+    while (angle < -PI) angle += 2 * PI;
+    return angle;
 }

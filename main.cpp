@@ -14,6 +14,7 @@ void Draw();
 void InitSimulation();
 void CleanUp();
 
+std::vector<Obstacle*> obstacles;
 std::vector<Boid*> boids;
 
 int main() {
@@ -37,6 +38,10 @@ void Draw()
 {
     BeginDrawing();
     ClearBackground(DARKGRAY);
+    for (const auto& obstacle : obstacles)
+    {
+        obstacle->Draw();
+    }
     for (const auto& boid : boids)
     {
         boid->Draw();
@@ -48,7 +53,7 @@ void Update()
 {
     for (auto& boid : boids)
     {
-        boid->Move(boids);
+        boid->Move(boids, obstacles);
     }
 }
 
@@ -60,6 +65,8 @@ void InitSimulation()
         Boid* boid = new Boid(Vector2{ (float)GetRandomValue(100, 980), (float)GetRandomValue(100, 620) }, GetRandomValue(0, 359));
         boids.push_back(boid);
     }
+    /*Obstacle* obstacle = new Obstacle(Rectangle{ 540, 360, 200, 200 });
+    obstacles.push_back(obstacle);*/
 }
 
 void CleanUp()
@@ -69,4 +76,9 @@ void CleanUp()
         delete boid;
     }
     boids.clear();
+    for (auto& obstacle : obstacles)
+    {
+        delete obstacle;
+    }
+    obstacles.clear();
 }
