@@ -9,9 +9,9 @@ class Boid
 private:
 	Rectangle mRect;
 	Vector2 mVelocity;
-	float mMaxSpeed = 300;
+	float mMaxSpeed = 250;
 	float mRotation = 0;
-	float mMinimumDistance = 50;
+	float mMinimumDistance = 35;
 	static int boidsCount;
 	int mId;
 	Texture mTexture;
@@ -27,6 +27,8 @@ public:
 	Vector2 AvoidObstacles(const std::vector<Obstacle*>& pObstacles);
 	Vector2 Align(const std::vector<Boid*>& pOthers);
 	Vector2 Group(const std::vector<Boid*>& pOthers);
+	Vector2 AvoidMouse();
+
 
 	inline Vector2 GetVelocity() const { return mVelocity; }
 	inline void SetVelocity(Vector2 pVelocity) { mVelocity = pVelocity; }
@@ -40,4 +42,5 @@ public:
 	Vector2 Normalize(const Vector2& vector);
 	float Length(const Vector2& vector);
 	float ClampAngle(float& angle);
+	float DotProduct(const Vector2& vector1, const Vector2& vector2);
 };

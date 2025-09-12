@@ -40,10 +40,6 @@ void Draw()
 {
     BeginDrawing();
     ClearBackground(BLACK);
-    for (const auto& obstacle : obstacles)
-    {
-        obstacle->Draw();
-    }
     for (const auto& boid : boids)
     {
         boid->Draw();
@@ -55,6 +51,10 @@ void Draw()
     for (const auto& boid : boids2)
     {
         boid->Draw();
+    }
+    for (const auto& obstacle : obstacles)
+    {
+        obstacle->Draw();
     }
     EndDrawing();
 }
@@ -81,23 +81,25 @@ void InitSimulation()
     Color color2 = { (unsigned char)GetRandomValue(0, 255), (unsigned char)GetRandomValue(0, 255), (unsigned char)GetRandomValue(0, 255), 255 };
     Color color3 = { (unsigned char)GetRandomValue(0, 255), (unsigned char)GetRandomValue(0, 255), (unsigned char)GetRandomValue(0, 255), 255 };
     Texture tex = LoadTexture("resources/WhiteFish.png");
-    for (int i = 0; i < 170; i++)
+    for (int i = 0; i < 40; i++)
     {
-        Boid* boid = new Boid(Vector2{ (float)GetRandomValue(100, 980), (float)GetRandomValue(100, 620) }, GetRandomValue(0, 359), color1, tex);
+        Boid* boid = new Boid(Vector2{ (float)GetRandomValue(100, 1820), (float)GetRandomValue(100, 980) }, GetRandomValue(0, 359), color1, tex);
         boids.push_back(boid);
     }
-    for (int i = 0; i < 170; i++)
+    for (int i = 0; i < 40; i++)
     {
-        Boid* boid = new Boid(Vector2{ (float)GetRandomValue(100, 980), (float)GetRandomValue(100, 620) }, GetRandomValue(0, 359), color2, tex);
+        Boid* boid = new Boid(Vector2{ (float)GetRandomValue(100, 1820), (float)GetRandomValue(100, 980) }, GetRandomValue(0, 359), color2, tex);
         boids1.push_back(boid);
     }
-    for (int i = 0; i < 170; i++)
+    for (int i = 0; i < 40; i++)
     {
-        Boid* boid = new Boid(Vector2{ (float)GetRandomValue(100, 980), (float)GetRandomValue(100, 620) }, GetRandomValue(0, 359), color3, tex);
+        Boid* boid = new Boid(Vector2{ (float)GetRandomValue(100, 1820), (float)GetRandomValue(100, 980) }, GetRandomValue(0, 359), color3, tex);
         boids2.push_back(boid);
     }
-    /*Obstacle* obstacle = new Obstacle(Rectangle{ 540, 360, 200, 200 });
-    obstacles.push_back(obstacle);*/
+    Obstacle* obstacle = new Obstacle(Rectangle{ 260, 540, 200, 200 });
+    obstacles.push_back(obstacle);
+    Obstacle* obstacle1 = new Obstacle(Rectangle{ 1250, 540, 100, 500 });
+    obstacles.push_back(obstacle1);
 }
 
 void CleanUp()
