@@ -12,7 +12,7 @@ Obstacle::~Obstacle()
 void Obstacle::Draw()
 {
 	Vector2 origin = Vector2{ (float)(mRect.width * 0.5), (float)(mRect.height * 0.5) };
-	DrawRectanglePro(mRect, origin, 0, WHITE);
-	DrawCircle(mRect.x, mRect.y, 5, RED);
-
+	DrawRectanglePro(mRect, origin, 0, BLACK);
+	DrawRectangleLines(mRect.x - origin.x, mRect.y - origin.y, mRect.width, mRect.height, WHITE);
+	//DrawCircle(mRect.x, mRect.y, 5, RED);
 }

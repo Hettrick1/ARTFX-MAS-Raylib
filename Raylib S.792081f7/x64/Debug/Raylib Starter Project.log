@@ -1,11 +1,5 @@
-﻿  Boid.cpp
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(15,27): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(16,28): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(34,71): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(35,71): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(37,33): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(38,33): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(40,34): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(41,34): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(131,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+﻿  main.cpp
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\main.cpp(93,129): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\main.cpp(98,129): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\main.cpp(103,131): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Raylib Starter Project.vcxproj -> C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\x64\Debug\Raylib Starter Project.exe

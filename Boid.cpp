@@ -5,9 +5,13 @@
 
 int Boid::boidsCount = 0;
 
-Boid::Boid(const Vector2& pInitialPosition, float pInitialRotation, const Color& pColor, const Texture& pTexture)
-    : mRect(Rectangle{ pInitialPosition.x, pInitialPosition.y, 20, 20}), mRotation(pInitialRotation), mColor(pColor), mTexture(pTexture)
+Boid::Boid(const Vector2& pInitialPosition, const float& pInitialSize, float pInitialRotation, const Color& pColor, const Texture& pTexture)
+    : mRect(Rectangle{ pInitialPosition.x, pInitialPosition.y, pInitialSize, pInitialSize}), mRotation(pInitialRotation), mColor(pColor), mTexture(pTexture)
 {
+
+    mMinimumDistance = mRect.width * 1.5;
+    mMaxSpeed *= (1 / pInitialSize) * 20;
+
     mVelocity.x = mMaxSpeed * cos(mRotation);
     mVelocity.y = mMaxSpeed * sin(mRotation);
     mId = boidsCount;
@@ -21,7 +25,7 @@ Boid::~Boid()
     UnloadTexture(mTexture);
 }
 
-void Boid::Move(const std::vector<Boid*>& pBoids, const std::vector<Obstacle*>& pObstacles)
+void Boid::Move(const std::vector<Boid*>& pBoids, const std::vector<std::vector<Boid*>>& pAllOtherBoids, const std::vector<Obstacle*>& pObstacles)
 {
     Vector2 separateForce = Separate(pBoids);
 
@@ -30,6 +34,7 @@ void Boid::Move(const std::vector<Boid*>& pBoids, const std::vector<Obstacle*>& 
     Vector2 groupForce = Group(pBoids);
     Vector2 allignForce = Align(pBoids);
     Vector2 mouseForce = AvoidMouse();
+    Vector2 otherBoidsForce = AvoidOtherBoids(pAllOtherBoids);
 
     mVelocity.x += (separateForce.x * 1.2) + (separateScreen.x * 0.3) + (separateObstacle.x * 0.5);
     mVelocity.y += (separateForce.y * 1.2) + (separateScreen.y * 0.3) + (separateObstacle.y * 0.5);
@@ -39,6 +44,10 @@ void Boid::Move(const std::vector<Boid*>& pBoids, const std::vector<Obstacle*>& 
 
     mVelocity.x += allignForce.x * 0.125;
     mVelocity.y += allignForce.y * 0.125;
+
+    mVelocity.x += otherBoidsForce.x * 0.5;
+    mVelocity.y += otherBoidsForce.y * 0.5;
+
 
     //mouse avoid factor
     //mVelocity.x += mouseForce.x * 0.2;
@@ -52,7 +61,7 @@ void Boid::Move(const std::vector<Boid*>& pBoids, const std::vector<Obstacle*>& 
 
     ClampAngle(angleDiff);
 
-    float turnFactor = 25.0f * (1 / mMaxSpeed);
+    float turnFactor = 0.8;
     if (angleDiff > turnFactor) 
     {
         angleDiff = turnFactor;
@@ -132,28 +141,25 @@ Vector2 Boid::AvoidObstacles(const std::vector<Obstacle*>& pObstacles)
     const float EPS = 1e-6f;
 
     for (auto& obstacle : pObstacles) {
-        Vector2 diff = { GetPosition().x - obstacle->GetPosition().x, GetPosition().y - obstacle->GetPosition().y };
-
+        Vector2 diff = { GetPosition().x - obstacle->GetPosition().x , GetPosition().y - obstacle->GetPosition().y };
         float distSq = diff.x * diff.x + diff.y * diff.y;
 
-        if (distSq < minDistSq && distSq > EPS)
+        float obstacleRadius = sqrt(obstacle->GetSize().x * 0.5 * obstacle->GetSize().x * 0.5 + obstacle->GetSize().y * 0.5 * obstacle->GetSize().y * 0.5);
+
+        float safeRadius = mMaxSpeed * 0.2 + obstacleRadius;
+
+        float safeRadiusSq = safeRadius * safeRadius;
+
+        if (distSq < safeRadiusSq && distSq > EPS)
         {
-            if (GetPosition().x < obstacle->GetPosition().x - obstacle->GetSize().x * 0.5)
-            {
-                steering.x -= mMaxSpeed * mMaxSpeed;
-            }
-            else if (GetPosition().x > obstacle->GetPosition().x + obstacle->GetSize().x * 0.5)
-            {
-                steering.x += mMaxSpeed * mMaxSpeed;
-            }
-            if (GetPosition().y < obstacle->GetPosition().y - obstacle->GetSize().y * 0.5)
-            {
-                steering.y -= mMaxSpeed * mMaxSpeed;
-            }
-            else if (GetPosition().y > obstacle->GetPosition().y + obstacle->GetSize().y * 0.5)
-            {
-                steering.y += mMaxSpeed * mMaxSpeed;
-            }
+            float dist = sqrt(distSq);
+            diff.x /= dist;
+            diff.y /= dist;
+
+            float strengh = (safeRadius - dist) / safeRadius;
+
+            steering.x += diff.x * strengh * 5000;
+            steering.y += diff.y * strengh * 5000;
         }
     }
     return steering;
@@ -171,7 +177,6 @@ Vector2 Boid::Align(const std::vector<Boid*>& pOthers)
             continue;
         }
         
-
         pV.x += boid->GetVelocity().x;
         pV.y += boid->GetVelocity().y;
     }
@@ -215,6 +220,43 @@ Vector2 Boid::AvoidMouse()
     force.x += (1 / diff.x) * mMaxSpeed * mMaxSpeed;
     force.y += (1 / diff.y) * mMaxSpeed * mMaxSpeed;
 
+    return force;
+}
+
+Vector2 Boid::AvoidOtherBoids(const std::vector<std::vector<Boid*>>& pOthers)
+{
+    Vector2 force = { 0,0 };
+    float minDistSq = mMinimumDistance * mMinimumDistance;
+    minDistSq *= 50;
+    const float EPS = 1e-6f;
+
+    Vector2 cM = { 0, 0 };
+
+    for (auto& other : pOthers)
+    {
+        if (other[0][0].GetSize().x < GetSize().x)
+        {
+            continue;
+        }
+        float otherSize = 0;
+        for (auto boid : other)
+        {
+            cM.x += boid->GetPosition().x;
+            cM.y += boid->GetPosition().y;
+            otherSize++;
+        }
+        cM.x /= otherSize;
+        cM.y /= otherSize;
+        
+        Vector2 diff = { GetPosition().x - cM.x, GetPosition().y - cM.y };
+        float distSq = diff.x * diff.x + diff.y * diff.y;
+
+        if (distSq < minDistSq && distSq > EPS)
+        {
+            force.x += (1 / (diff.x == 0 ? 1 : diff.x)) * mMaxSpeed * 500;
+            force.y += (1 / (diff.y == 0 ? 1 : diff.y)) * mMaxSpeed * 500;
+        }
+    }
     return force;
 }
 
