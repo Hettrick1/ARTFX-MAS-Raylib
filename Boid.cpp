@@ -27,26 +27,44 @@ Boid::~Boid()
 
 void Boid::Move(const std::vector<Boid*>& pBoids, const std::vector<std::vector<Boid*>>& pAllOtherBoids, const std::vector<Obstacle*>& pObstacles)
 {
-    Vector2 separateForce = Separate(pBoids);
-
+    Vector2 separateForce = { 0,0 };
     Vector2 separateScreen = AvoidScreenBorder();
     Vector2 separateObstacle = AvoidObstacles(pObstacles);
-    Vector2 groupForce = Group(pBoids);
-    Vector2 allignForce = Align(pBoids);
+    Vector2 groupForce = {0,0};
+    Vector2 allignForce = { 0,0 };
     Vector2 mouseForce = AvoidMouse();
-    Vector2 otherBoidsForce = AvoidOtherBoids(pAllOtherBoids);
+    //Vector2 otherBoidsForce = AvoidOtherBoids(pAllOtherBoids);
 
-    mVelocity.x += (separateForce.x * 1.2) + (separateScreen.x * 0.3) + (separateObstacle.x * 0.5);
-    mVelocity.y += (separateForce.y * 1.2) + (separateScreen.y * 0.3) + (separateObstacle.y * 0.5);
+    for (auto boid : pBoids)
+    {
+        if (boid->GetID() == mId)
+        {
+            continue;
+        }
+        separateForce.x += Separate(boid).x;
+        separateForce.y += Separate(boid).y;
+        groupForce.x += Group(boid).x;
+        groupForce.y += Group(boid).y;
+        allignForce.x += Align(boid).x;
+        allignForce.y += Align(boid).y;
+    }
+    
+    separateForce = Normalize(separateForce);
+    groupForce = Normalize(groupForce);
+    allignForce = Normalize(allignForce);
+    
 
-    mVelocity.x += groupForce.x * 0.05;
-    mVelocity.y += groupForce.y * 0.05;
+    mVelocity.x += (separateForce.x * 5.9 * (mMaxSpeed / 100)) + (separateScreen.x * 0.1 * (mMaxSpeed / 100)) + (separateObstacle.x * 2 * (mMaxSpeed / 100));
+    mVelocity.y += (separateForce.y * 5.9 * (mMaxSpeed / 100)) + (separateScreen.y * 0.1 * (mMaxSpeed / 100)) + (separateObstacle.y * 2 * (mMaxSpeed / 100));
 
-    mVelocity.x += allignForce.x * 0.125;
-    mVelocity.y += allignForce.y * 0.125;
+    mVelocity.x += groupForce.x * 1.8 * (mMaxSpeed / 100);
+    mVelocity.y += groupForce.y * 1.8 * (mMaxSpeed / 100);
 
-    mVelocity.x += otherBoidsForce.x * 0.5;
-    mVelocity.y += otherBoidsForce.y * 0.5;
+    mVelocity.x += allignForce.x * 1.8 * (mMaxSpeed / 100);
+    mVelocity.y += allignForce.y * 1.8 * (mMaxSpeed / 100);
+
+    /*mVelocity.x += otherBoidsForce.x * 0.5;
+    mVelocity.y += otherBoidsForce.y * 0.5;*/
 
     Vector2 desiredVelocity = Normalize(mVelocity);
 
@@ -56,7 +74,7 @@ void Boid::Move(const std::vector<Boid*>& pBoids, const std::vector<std::vector<
 
     ClampAngle(angleDiff);
 
-    float turnFactor = 0.8;
+    float turnFactor = 0.8 * (1/mMaxSpeed) * 200;
     if (angleDiff > turnFactor) 
     {
         angleDiff = turnFactor;
@@ -75,28 +93,21 @@ void Boid::Move(const std::vector<Boid*>& pBoids, const std::vector<std::vector<
     mRect.y += mVelocity.y * GetFrameTime();
 }
 
-Vector2 Boid::Separate(const std::vector<Boid*>& pOthers)
+Vector2 Boid::Separate(const Boid* boid)
 {
     Vector2 separation = { 0.0f, 0.0f };
     float minDistSq = mMinimumDistance * mMinimumDistance;
     const float EPS = 1e-6f;
 
-    for (const auto& boid : pOthers)
-    {
-        if (boid->GetID() == mId)
-        {
-            continue;
-        }
+    Vector2 diff = { GetPosition().x - boid->GetPosition().x, GetPosition().y - boid->GetPosition().y };
 
-        Vector2 diff = { GetPosition().x - boid->GetPosition().x, GetPosition().y - boid->GetPosition().y };
-
-        float distSq = diff.x * diff.x + diff.y * diff.y;
-        if (distSq < minDistSq && distSq > EPS)
-        {      
-            separation.x += (1 / (diff.x == 0 ? 1 : diff.x)) * mMaxSpeed;
-            separation.y += (1 / (diff.y == 0 ? 1 : diff.y)) * mMaxSpeed;
-        }
+    float distSq = diff.x * diff.x + diff.y * diff.y;
+    if (distSq < minDistSq && distSq > EPS)
+    {      
+        separation.x += (1 / (diff.x == 0 ? 1 : diff.x)) * mMaxSpeed;
+        separation.y += (1 / (diff.y == 0 ? 1 : diff.y)) * mMaxSpeed;
     }
+
     if (Length(separation) > EPS)
     {
         Normalize(separation);
@@ -160,41 +171,28 @@ Vector2 Boid::AvoidObstacles(const std::vector<Obstacle*>& pObstacles)
     return steering;
 }
 
-Vector2 Boid::Align(const std::vector<Boid*>& pOthers)
+Vector2 Boid::Align(const Boid* boid)
 {
     Vector2 pV = { 0, 0 };
-    for (const auto& boid : pOthers)
-    {
-        Vector2 diff = { GetPosition().x - boid->GetPosition().x, GetPosition().y - boid->GetPosition().y };
 
-        if (boid->GetID() == mId || Length(diff) > mRect.width + 150) //  || DotProduct(GetPosition(), boid->GetPosition()) > -0.5
-        {
-            continue;
-        }
-        
-        pV.x += boid->GetVelocity().x;
-        pV.y += boid->GetVelocity().y;
+    Vector2 diff = { GetPosition().x - boid->GetPosition().x, GetPosition().y - boid->GetPosition().y };
+
+    if (Length(diff) > mRect.width + 150) //  || DotProduct(GetPosition(), boid->GetPosition()) > -0.5
+    {
+        return pV;
     }
-    pV.x /= pOthers.size() - 1;
-    pV.y /= pOthers.size() - 1;
+        
+    pV.x += boid->GetVelocity().x;
+    pV.y += boid->GetVelocity().y;
 
     return Vector2{ (pV.x - mVelocity.x), (pV.y - mVelocity.y)};
 }
 
-Vector2 Boid::Group(const std::vector<Boid*>& pOthers)
+Vector2 Boid::Group(const Boid* boid)
 {
     Vector2 cM = { 0, 0 };
-    for (const auto& boid : pOthers)
-    {
-        if (boid->GetID() == mId ) // || DotProduct(GetPosition(), boid->GetPosition()) > -0.5
-        {
-            continue;
-        }
-        cM.x += boid->GetPosition().x;
-        cM.y += boid->GetPosition().y;
-    }
-    cM.x /= pOthers.size() - 1;
-    cM.y /= pOthers.size() - 1;
+    cM.x += boid->GetPosition().x;
+    cM.y += boid->GetPosition().y;
 
     return Vector2{(cM.x - mRect.x), (cM.y - mRect.y)};
 }

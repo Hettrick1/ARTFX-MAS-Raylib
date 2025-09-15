@@ -22,11 +22,11 @@ public:
 
 	void Move(const std::vector<Boid*>& pBoids, const std::vector<std::vector<Boid*>>& pAllOtherBoids, const std::vector<Obstacle*>& pObstacles);
 
-	Vector2 Separate(const std::vector<Boid*>& pOthers);
+	Vector2 Separate(const Boid* pOthers);
 	Vector2 AvoidScreenBorder();
 	Vector2 AvoidObstacles(const std::vector<Obstacle*>& pObstacles);
-	Vector2 Align(const std::vector<Boid*>& pOthers);
-	Vector2 Group(const std::vector<Boid*>& pOthers);
+	Vector2 Align(const Boid* pOthers);
+	Vector2 Group(const Boid* pOthers);
 	Vector2 AvoidMouse();
 	Vector2 AvoidOtherBoids(const std::vector<std::vector<Boid*>>&);
 
