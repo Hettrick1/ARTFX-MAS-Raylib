@@ -1,5 +1,17 @@
-﻿  main.cpp
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\main.cpp(93,129): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\main.cpp(98,129): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\main.cpp(103,131): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+﻿  Boid.cpp
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(12,36): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(19,27): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(20,28): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(39,71): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(40,71): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(42,33): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(43,33): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(45,34): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(46,34): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(48,38): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(49,38): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(64,22): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(140,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(147,30): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\Boid.cpp(149,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   Raylib Starter Project.vcxproj -> C:\Users\evann.jacquot\Documents\GitHub\ARTFX-MAS-Raylib\x64\Debug\Raylib Starter Project.exe

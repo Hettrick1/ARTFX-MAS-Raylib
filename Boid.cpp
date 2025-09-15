@@ -48,11 +48,6 @@ void Boid::Move(const std::vector<Boid*>& pBoids, const std::vector<std::vector<
     mVelocity.x += otherBoidsForce.x * 0.5;
     mVelocity.y += otherBoidsForce.y * 0.5;
 
-
-    //mouse avoid factor
-    //mVelocity.x += mouseForce.x * 0.2;
-    //mVelocity.y += mouseForce.y * 0.2;
-
     Vector2 desiredVelocity = Normalize(mVelocity);
 
     float desiredAngle = atan2(desiredVelocity.y, desiredVelocity.x);
@@ -265,8 +260,6 @@ void Boid::Draw()
     Vector2 origin = Vector2{ (float)(mRect.width * 0.5), (float)(mRect.height * 0.5) };
 
     DrawTexturePro(mTexture, { 0,0, mRect.width, mRect.height }, mRect, origin, mRotation * RAD2DEG + 180, mColor);
-
-    //DrawCircleLines(mRect.x, mRect.y, mMinimumDistance, RED);
 }
 
 Vector2 Boid::Normalize(const Vector2& vector)
